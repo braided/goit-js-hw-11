@@ -16,30 +16,46 @@ export const refs = {
 };
 
 refs.form.addEventListener('submit', onSearchFormImages);
+
 function onSearchFormImages(e) {
   e.preventDefault();
-  let name = refs.input.value.trim();
+
+  const name = refs.input.value.trim();
+
   if (!name) {
-    iziToast.error({ message: 'input empty', position: 'topRight' });
+    iziToast.error({
+      message: 'Input is empty!',
+      position: 'topRight',
+    });
     return;
   }
+
   onLouder();
   onImagesRenderClear();
+
   getImage(name)
     .then(imageData => {
       if (imageData.total === 0) {
         iziToast.error({
-          message: 'Sorry, there are no images matching your search query. Please try again!',
+          message:
+            'Sorry, there are no images matching your search query. Please try again!',
           position: 'topRight',
         });
-
         return;
       }
 
-      const imagesCart = imageData.hits;
-
-      ImagesRender(imagesCart);
+      ImagesRender(imageData.hits);
       onImagesRenderLarge();
     })
-    .finally(() => offLouder());
+    .catch(error => {
+      console.error(error);
+
+      iziToast.error({
+        message: 'Something went wrong. Please try again later.',
+        position: 'topRight',
+      });
+    })
+    .finally(() => {
+      offLouder();
+    });
 }
