@@ -1,5 +1,5 @@
 import SimpleLightbox from 'simplelightbox';
-import { refs } from '../main';
+import { refs } from '../public/main';
 
 const large = new SimpleLightbox('.gallery-item a', {
   captionsData: 'alt',

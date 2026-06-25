@@ -1,12 +1,12 @@
 import iziToast from 'izitoast';
-import { getImage } from './js/pixabay-api';
+import { getImage } from '../js/pixabay-api';
 import {
   ImagesRender,
   offLouder,
   onImagesRenderClear,
   onImagesRenderLarge,
   onLouder,
-} from './js/render-functions';
+} from '../js/render-functions';
 
 export const refs = {
   form: document.querySelector('.form'),
