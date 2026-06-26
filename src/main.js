@@ -1,28 +1,25 @@
 import iziToast from 'izitoast';
-import { getImage } from '../js/pixabay-api';
+import 'izitoast/dist/css/iziToast.min.css';
+
+import { getImagesByQuery } from './js/pixabay-api';
+
 import {
-  ImagesRender,
-  offLouder,
-  onImagesRenderClear,
-  onImagesRenderLarge,
-  onLouder,
-} from '../js/render-functions';
+  createGallery,
+  clearGallery,
+  showLoader,
+  hideLoader,
+} from './js/render-functions';
 
-export const refs = {
-  form: document.querySelector('.form'),
-  input: document.querySelector('input[name="search-text"]'),
-  gallery: document.querySelector('.gallery'),
-  loader: document.querySelector('.loader'),
-};
+const form = document.querySelector('.form');
 
-refs.form.addEventListener('submit', onSearchFormImages);
+form.addEventListener('submit', onSearch);
 
-function onSearchFormImages(e) {
-  e.preventDefault();
+function onSearch(event) {
+  event.preventDefault();
 
-  const name = refs.input.value.trim();
+  const query = event.currentTarget.elements['search-text'].value.trim();
 
-  if (!name) {
+  if (!query) {
     iziToast.error({
       message: 'Input is empty!',
       position: 'topRight',
@@ -30,12 +27,12 @@ function onSearchFormImages(e) {
     return;
   }
 
-  onLouder();
-  onImagesRenderClear();
+  clearGallery();
+  showLoader();
 
-  getImage(name)
-    .then(imageData => {
-      if (imageData.total === 0) {
+  getImagesByQuery(query)
+    .then(data => {
+      if (data.hits.length === 0) {
         iziToast.error({
           message:
             'Sorry, there are no images matching your search query. Please try again!',
@@ -44,18 +41,17 @@ function onSearchFormImages(e) {
         return;
       }
 
-      ImagesRender(imageData.hits);
-      onImagesRenderLarge();
-    })
-    .catch(error => {
-      console.error(error);
+      createGallery(data.hits);
 
+      form.reset();
+    })
+    .catch(() => {
       iziToast.error({
         message: 'Something went wrong. Please try again later.',
         position: 'topRight',
       });
     })
     .finally(() => {
-      offLouder();
+      hideLoader();
     });
 }

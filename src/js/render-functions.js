@@ -1,61 +1,74 @@
 import SimpleLightbox from 'simplelightbox';
-import { refs } from '../public/main';
+import 'simplelightbox/dist/simple-lightbox.min.css';
+
+const gallery = document.querySelector('.gallery');
+const loader = document.querySelector('.loader');
 
 const lightbox = new SimpleLightbox('.gallery a', {
   captionsData: 'alt',
   captionDelay: 250,
 });
 
-export function renderImages(images) {
+export function createGallery(images) {
   const markup = images
     .map(
-      image => `
-      <li class="gallery-item">
-        <a href="${image.largeImageURL}">
-          <img
-            src="${image.webformatURL}"
-            alt="${image.tags}"
-          />
-        </a>
+      ({
+        webformatURL,
+        largeImageURL,
+        tags,
+        likes,
+        views,
+        comments,
+        downloads,
+      }) => `
+<li class="gallery-item">
+  <a class="gallery-link" href="${largeImageURL}">
+    <img
+      class="gallery-image"
+      src="${webformatURL}"
+      alt="${tags}"
+    />
+  </a>
 
-        <div class="info">
-          <div class="content">
-            <p class="name">Likes</p>
-            <p>${image.likes}</p>
-          </div>
+  <div class="info">
+    <div class="content">
+      <p class="name">Likes</p>
+      <p>${likes}</p>
+    </div>
 
-          <div class="content">
-            <p class="name">Views</p>
-            <p>${image.views}</p>
-          </div>
+    <div class="content">
+      <p class="name">Views</p>
+      <p>${views}</p>
+    </div>
 
-          <div class="content">
-            <p class="name">Comments</p>
-            <p>${image.comments}</p>
-          </div>
+    <div class="content">
+      <p class="name">Comments</p>
+      <p>${comments}</p>
+    </div>
 
-          <div class="content">
-            <p class="name">Downloads</p>
-            <p>${image.downloads}</p>
-          </div>
-        </div>
-      </li>
-    `
+    <div class="content">
+      <p class="name">Downloads</p>
+      <p>${downloads}</p>
+    </div>
+  </div>
+</li>
+`
     )
     .join('');
 
-  refs.gallery.insertAdjacentHTML('beforeend', markup);
+  gallery.insertAdjacentHTML('beforeend', markup);
+
   lightbox.refresh();
 }
 
 export function clearGallery() {
-  refs.gallery.innerHTML = '';
+  gallery.innerHTML = '';
 }
 
 export function showLoader() {
-  refs.loader.classList.add('is-active');
+  loader.classList.add('is-active');
 }
 
 export function hideLoader() {
-  refs.loader.classList.remove('is-active');
+  loader.classList.remove('is-active');
 }
